@@ -1,0 +1,38 @@
+import React from 'react';
+import { ProtectedRoute } from '../shared/components';
+import { Redirect, Route, Switch } from 'react-router-dom';
+
+/* Import UI Components */
+import { NavBar } from '../components';
+
+/* Import Route Components */
+import { Home } from './home';
+import { Profile } from './profile';
+import { AuthCallback } from './auth';
+import HomeScene from '../scenes/Home/Home';
+import MainLayout from './MainLayout';
+import GroupsScene from '../scenes/GroupsScene';
+import MessagesScene from '../scenes/MessagesScene';
+import ActionsScene from '../scenes/ActionsScene';
+
+export default class Router extends React.PureComponent {
+  render() {
+    return (
+      <Switch>
+        <Route path="/auth" component={AuthCallback} />
+        <Route>
+          <MainLayout>
+            <Switch>
+              <ProtectedRoute exact path="/" component={HomeScene} />
+              <ProtectedRoute exact path="/profile" component={Profile} />
+              <ProtectedRoute exact path="/groups" component={GroupsScene} />
+              <ProtectedRoute exact path="/messages" component={MessagesScene} />
+              <ProtectedRoute exact path="/actions" component={ActionsScene} />
+              <Redirect to="/" />
+            </Switch>
+          </MainLayout>
+        </Route>
+      </Switch>
+    );
+  }
+}
