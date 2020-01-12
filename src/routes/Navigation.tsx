@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Icon, Typography } from 'antd';
-
+import { Link } from 'react-router-dom';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const Navigation = () => {
   const [collapsed, setCollapsed] = useState(false);
-
+  const [selectedKeys, setSelectedKeys] = useState(['home']);
   let currentKey = 1;
 
   // const foundIndexPath = findIndex(Object.keys(navItems), key => {
@@ -17,7 +17,7 @@ const Navigation = () => {
   const navItems = [
     { key: 'home', href: '/home', icon: 'home', title: 'Home' },
     { key: 'Message', href: '/messages', icon: 'message', title: 'Messages' },
-    { key: 'events', href: '/events', icon: 'calendar', title: 'Events' },
+    { key: 'actions', href: '/actions', icon: 'arrow-right', title: 'actions' },
     { key: 'groups', href: '/groups', icon: 'contacts', title: 'Groups' },
     {
       key: 'templates',
@@ -41,15 +41,17 @@ const Navigation = () => {
         <Typography.Title level={4}>TellTeam</Typography.Title>
       </div>
 
-      <Menu theme="light" mode="inline" selectedKeys={['home']}>
+      <Menu defaultSelectedKeys={['home']} theme="light" mode="inline" selectedKeys={selectedKeys}>
         {!!true
           ? navItems.map(item => {
               return (
-                <Menu.Item key={item.key}>
-                  <span>
-                    <Icon type={item.icon} />
-                    <span>{item.title}</span>
-                  </span>
+                <Menu.Item key={item.key} onClick={() => setSelectedKeys([item.key])}>
+                  <Link to={item.href}>
+                    <span>
+                      <Icon type={item.icon} />
+                      <span style={{ textTransform: 'capitalize' }}>{item.title}</span>
+                    </span>
+                  </Link>
                 </Menu.Item>
               );
             })

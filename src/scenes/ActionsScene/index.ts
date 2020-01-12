@@ -1,2 +1,2 @@
-import ActionsScene from './ActionsScene';
-export default ActionsScene;
+import ActionsSceneContainer from './ActionsSceneContainer';
+export default ActionsSceneContainer;

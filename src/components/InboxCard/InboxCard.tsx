@@ -105,7 +105,7 @@ const InboxCard: React.FC = () => {
         />
         <h3>Reminders</h3>
         <Table pagination={false} showHeader={false} columns={columns} dataSource={data} />
-        <h3>Member Requests:</h3>
+        <h3 style={{ marginTop: '2rem' }}>Member Requests</h3>
         <Table pagination={false} showHeader={false} columns={columns} dataSource={data} />
       </div>
     </Col>

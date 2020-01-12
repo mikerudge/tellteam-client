@@ -21,13 +21,6 @@ const MainLayout: React.FC = ({ children }) => {
           ghost={false}
           title={!loading && !error ? `Hi ${data.user.firstName} ` : 'Hi!'}
           tags={<Tag color="green">0 Tasks</Tag>}
-          extra={[
-            <Button key="3">Create new group</Button>,
-            <Button key="2">Add new Member</Button>,
-            <Button key="1" type="primary">
-              Send Message
-            </Button>,
-          ]}
         />
         <Content style={{ margin: '26px 26px' }}>{children}</Content>
         <Footer style={{ textAlign: 'center' }}>TellTeam ©2020</Footer>
