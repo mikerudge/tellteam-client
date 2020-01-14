@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Icon, Typography } from 'antd';
 import { Link } from 'react-router-dom';
+import { withAuth } from '@8base/react-sdk';
+
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const Navigation = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(['home']);
-  let currentKey = 1;
+  // const { auth, client } = props;
+
+  let currentKey = 'home';
 
   // const foundIndexPath = findIndex(Object.keys(navItems), key => {
   //     return router.pathname.indexOf(key) > -1;
   // })
   // if( foundIndexPath > -1 ) currentKey = foundIndexPath + 1;
+
+  // const onLogout = async () => {
+  //   await client.clearStore();
+  //   auth.authClient.logout();
+  // };
 
   const navItems = [
     { key: 'home', href: '/home', icon: 'home', title: 'Home' },
@@ -25,7 +34,6 @@ const Navigation = () => {
       icon: 'read',
       title: 'Templales',
     },
-    { key: 'logout', href: '/logout', icon: 'logout', title: 'Logout' },
   ];
 
   return (
@@ -42,36 +50,23 @@ const Navigation = () => {
       </div>
 
       <Menu defaultSelectedKeys={['home']} theme="light" mode="inline" selectedKeys={selectedKeys}>
-        {!!true
-          ? navItems.map(item => {
-              return (
-                <Menu.Item key={item.key} onClick={() => setSelectedKeys([item.key])}>
-                  <Link to={item.href}>
-                    <span>
-                      <Icon type={item.icon} />
-                      <span style={{ textTransform: 'capitalize' }}>{item.title}</span>
-                    </span>
-                  </Link>
-                </Menu.Item>
-              );
-            })
-          : [
-              <Menu.Item key="login">
+        {navItems.map(item => {
+          return (
+            <Menu.Item key={item.key} onClick={() => setSelectedKeys([item.key])}>
+              <Link to={item.href}>
                 <span>
-                  <Icon type="login" />
-                  <span>Login</span>
+                  <Icon type={item.icon} />
+                  <span style={{ textTransform: 'capitalize' }}>{item.title}</span>
                 </span>
-              </Menu.Item>,
-              <Menu.Item key="register">
-                <span>
-                  <Icon type="plus-square" />
-                  <span>Register</span>
-                </span>
-              </Menu.Item>,
-            ]}
+              </Link>
+            </Menu.Item>
+          );
+        })}
       </Menu>
     </Sider>
   );
 };
 
-export default Navigation;
+const WrappedNAv = withAuth(Navigation);
+
+export default WrappedNAv;

@@ -4,10 +4,9 @@ import CardItem from './CardItem';
 import { Input, Icon, message, Col, Select, Spin, Button } from 'antd';
 import axios from 'axios';
 import CardHeader from '../CardHeader';
-const { Option } = Select;
 
 type Props = {
-  title: string;
+  onClick: (args0: object) => void;
 };
 
 type Variable = {
@@ -23,17 +22,8 @@ type CardItem = {
   message: string;
 };
 
-type User = {
-  value: string;
-  text: string;
-};
-
-const ActivityCard: React.FC<Props> = ({ title }) => {
-  const [member, setMember] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState<User[] | undefined>([]);
-
-  const memberName = (member && member[0].label) || 'a member';
+const ActivityCard: React.FC<Props> = ({ onClick }) => {
+  const memberName = 'a member';
 
   const items: CardItem[] = [
     {
@@ -64,61 +54,13 @@ const ActivityCard: React.FC<Props> = ({ title }) => {
     },
   ];
 
-  const fetchUsers = async () => {
-    setIsLoading(true);
-
-    try {
-      const { data } = await axios.get('https://randomuser.me/api/?results=5');
-
-      const results = data.results.map(
-        (user: { name: { first: string; last: string }; login: { username: string } }) => ({
-          text: `${user.name.first} ${user.name.last}`,
-          value: user.login.username,
-        })
-      );
-
-      setUsers(results);
-    } catch (e) {
-      console.log('e', e);
-      message.error('Could not get users');
-    }
-
-    setIsLoading(false);
-  };
-
   return (
     <Col xs={24} sm={24} md={16} lg={8} xl={10}>
       <div className="card-container">
-        <CardHeader
-          title="Quick Actions"
-          icon="user"
-          rightElements={<Button size="small" shape="circle" type="primary" icon="plus" />}
-        />
-        {/* <Input
-          value={member}
-          onChange={e => setMember(e.target.value)}
-          style={{ marginBottom: '2rem' }}
-          placeholder="Lisa Thomas"
-          size="large"
-          prefix={<Icon type="user" style={{ color: '#a0aec0' }} />}
-        /> */}
-
-        <Select
-          mode="multiple"
-          labelInValue
-          value={member}
-          placeholder="Select members"
-          notFoundContent={isLoading ? <Spin size="small" /> : null}
-          filterOption={false}
-          onSearch={fetchUsers}
-          onChange={(e: React.SetStateAction<string>) => setMember(e)}
-          style={{ width: '100%', marginBottom: '2rem' }}
-        >
-          {users && users.map(d => <Option key={d.value}>{d.text}</Option>)}
-        </Select>
+        <CardHeader title="Quick Actions" icon="user" />
 
         {items.map(item => {
-          return <CardItem {...item} disabled={!member} clearInput={() => setMember({ value: null, label: null })} />;
+          return <CardItem {...item} disabled={false} onClick={() => onClick(item)} clearInput={() => null} />;
         })}
       </div>
     </Col>

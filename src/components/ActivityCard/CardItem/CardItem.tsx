@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Icon, Button, message, Popconfirm, Input, Modal } from 'antd';
+import { useMutation } from 'react-apollo';
+import gql from 'graphql-tag';
 
 type Variable = {
   type: 'text' | 'number';
@@ -12,36 +14,57 @@ type Props = {
   disabled?: boolean;
   variables?: Variable[];
   clearInput: () => void;
+  onClick: (args: object) => void;
   message: string;
 };
 
-const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, variables, message: textMessage }) => {
+const CREATE_MESSAGE = gql(`mutation Create_Message($text: String!){
+  notificationCreate(data: {text: $text, user: {connect: {email: "mikerudge@me.com"}}}){
+    id
+    text
+    createdAt
+  }
+}`);
+
+const CardItem: React.FC<Props> = props => {
+  const [createMessage] = useMutation(CREATE_MESSAGE);
+
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const onClick = () => {
+  const onSelect = async () => {
+    props.onClick(props);
     setLoading(true);
-    clearInput();
     setIsSelected(false);
-    setTimeout(() => {
-      setLoading(false);
+    const messageText = 'Pellentesque habitant morbi tristiqueCustom Varibles';
+    try {
+      await createMessage({ variables: { text: messageText } });
       setIsSuccess(true);
       setIsSelected(false);
       message.success('Message sent');
       setTimeout(() => {
         setIsSuccess(false);
       }, 2000);
-    }, 3000);
+    } catch (e) {
+      message.error(e.message);
+      console.log('e', e);
+    }
+    setLoading(false);
+  };
+
+  const selectCard = () => {
+    setIsSelected(true);
+    props.onClick(props);
   };
 
   return (
     <div
-      onClick={() => setIsSelected(true)}
+      onClick={selectCard}
       style={{
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#f0f2f5',
+        backgroundColor: isSelected ? '#f0fff4' : '#f0f2f5',
         padding: '1.2rem',
         borderRadius: '10px',
         marginBottom: '0.9rem',
@@ -51,8 +74,8 @@ const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, v
       <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           {/* <Icon type="user" /> */}
-          <h3 style={{ margin: 0, fontWeight: 600, textTransform: 'uppercase' }}>{title}</h3>
-          <p style={{ margin: 0, fontWeight: 600, color: '#a0aec0' }}>{description}</p>
+          <h3 style={{ margin: 0, fontWeight: 600, textTransform: 'uppercase' }}>{props.title}</h3>
+          <p style={{ margin: 0, fontWeight: 600, color: '#a0aec0' }}>{props.description}</p>
         </div>
 
         {(isSelected || isSuccess || loading) && (
@@ -61,8 +84,8 @@ const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, v
       </div>
       <div>
         {isSelected &&
-          variables &&
-          variables.map(variable => {
+          props.variables &&
+          props.variables.map(variable => {
             return <Input style={{ marginTop: '15px', marginBottom: '5px' }} placeholder={variable.placeholder} />;
           })}
         {isSelected && (
@@ -71,8 +94,8 @@ const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, v
               Preview Message
             </Button>
             <Button
-              disabled={disabled || isSuccess || loading}
-              onClick={onClick}
+              disabled={props.disabled || isSuccess || loading}
+              onClick={onSelect}
               style={{ marginLeft: '5px' }}
               type="primary"
             >
@@ -82,7 +105,7 @@ const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, v
         )}
       </div>
       <Modal centered title="Basic Modal" visible={showModal} onCancel={() => setShowModal(false)}>
-        <p>{textMessage}</p>
+        <p>"hello world</p>
       </Modal>
     </div>
   );

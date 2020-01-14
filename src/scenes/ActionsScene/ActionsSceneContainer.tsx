@@ -10,15 +10,16 @@ const ActionsSceneContainer: React.FC = () => {
       key: 'bhaksd',
       title: 'GUEST ARRIVED',
       description: `Let the member know their guest has arrived`,
-      message: 'Hi, your guest has just arrived at reception',
-      variables: [{ type: 'text', placeholder: 'Guest Name (optional)' }],
+      message: 'Hi ${memberName}, ${guestName} has just arrived at reception',
+      variables: [{ type: 'text', placeholder: 'Guest Name (optional)', key: 'guestName' }],
     },
     {
       key: 'CAR PARKED INCORRECTLY',
       title: 'CAR PARKED INCORRECTLY',
       description: `Ask member to move their car`,
-      message: 'We have had reports of your car being parked against our rules. Please you you move it ASAP',
-      variables: [{ type: 'text', placeholder: 'CA18 YTR' }],
+      message:
+        'We have had reports of your car (${carReg}) being parked against our rules. Please you you move it ASAP',
+      variables: [{ type: 'text', placeholder: 'Car Registration', key: 'carReg' }],
     },
     {
       key: 'lsdajknda',
@@ -52,7 +53,7 @@ const ActionsSceneContainer: React.FC = () => {
     },
   ];
 
-  const systemVariables = ['Today', 'Yesterday', 'Member Name', 'My Name'];
+  const systemVariables = ['Today', 'Yesterday', 'memberName', 'myName'];
 
   return <ActionsScene data={data} systemVariables={systemVariables} />;
 };
