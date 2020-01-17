@@ -3,15 +3,42 @@ import gql from 'graphql-tag';
  * Query the current users details.
  */
 export const CURRENT_USER_QUERY = gql`
-  query {
+  query GET_ACCOUNTS_AND_USER {
     user {
       id
       email
       lastName
       firstName
     }
+    accountsList {
+      items {
+        id
+        name
+      }
+    }
   }
 `;
+
+export const GET_ACCOUNT_MEMBERS = gql`
+  query GET_ACCOUNT_MEMBERS($id: ID!) {
+    account(id: $id) {
+      id
+      admins {
+        items {
+          email
+        }
+      }
+      members {
+        items {
+          id
+          lastName
+          firstName
+        }
+      }
+    }
+  }
+`;
+
 /**
  * Sign up a new user mutation.
  */

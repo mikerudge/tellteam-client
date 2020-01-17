@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Select, message, Spin } from 'antd';
 import Axios from 'axios';
+import { useQuery } from 'react-apollo';
+import { GET_ACCOUNT_MEMBERS } from '../../shared/graphql';
+import { Get_Account_MembersQuery, Get_Account_MembersQueryVariables } from '../../shared/API_TYPES';
 const { Option } = Select;
 
 type User = {
@@ -10,42 +13,35 @@ type User = {
 
 const UserSearchInput: React.FC = () => {
   const [member, setMember] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState<User[] | undefined>([]);
-  const fetchUsers = async () => {
-    try {
-      const { data } = await Axios.get('https://randomuser.me/api/?results=5');
 
-      const results = data.results.map(
-        (user: { name: { first: string; last: string }; login: { username: string } }) => ({
-          text: `${user.name.first} ${user.name.last}`,
-          value: user.login.username,
-        })
-      );
+  const { data, loading, error } = useQuery<Get_Account_MembersQuery, Get_Account_MembersQueryVariables>(
+    GET_ACCOUNT_MEMBERS,
+    { variables: { id: 'ck56yfrae01cg07jma361drto' } }
+  );
 
-      setUsers(results);
-    } catch (e) {
-      console.log('e', e);
-      message.error('Could not get users');
-    }
-
-    setIsLoading(false);
-  };
+  if (error) {
+    console.log('error', error);
+  }
+  console.log('data sdsa', data);
+  const members = data?.account?.members?.items ?? [];
 
   return (
     <div style={{ width: '100%' }}>
       <Select
-        mode="multiple"
         labelInValue
         value={member}
         placeholder="Select members"
-        notFoundContent={isLoading ? <Spin size="small" /> : null}
+        notFoundContent={loading ? <Spin size="small" /> : null}
         filterOption={false}
-        onSearch={fetchUsers}
         onChange={(e: React.SetStateAction<string>) => setMember(e)}
-        style={{ width: '100%', marginBottom: '2rem' }}
+        style={{ width: '100%' }}
       >
-        {users && users.map(d => <Option key={d.value}>{d.text}</Option>)}
+        {members &&
+          members.map(d => (
+            <Option key={d.id ?? 'djs'}>
+              {d.firstName} {d.lastName}
+            </Option>
+          ))}
       </Select>
     </div>
   );

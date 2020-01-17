@@ -7,6 +7,7 @@ import CardHeader from '../CardHeader';
 
 type Props = {
   onClick: (args0: object) => void;
+  selectedActionId?: string;
 };
 
 type Variable = {
@@ -22,7 +23,7 @@ type CardItem = {
   message: string;
 };
 
-const ActivityCard: React.FC<Props> = ({ onClick }) => {
+const ActivityCard: React.FC<Props> = ({ onClick, selectedActionId }) => {
   const memberName = 'a member';
 
   const items: CardItem[] = [
@@ -60,7 +61,15 @@ const ActivityCard: React.FC<Props> = ({ onClick }) => {
         <CardHeader title="Quick Actions" icon="user" />
 
         {items.map(item => {
-          return <CardItem {...item} disabled={false} onClick={() => onClick(item)} clearInput={() => null} />;
+          return (
+            <CardItem
+              {...item}
+              selected={selectedActionId ? selectedActionId === item.key : false}
+              disabled={false}
+              onClick={() => onClick(item)}
+              clearInput={() => null}
+            />
+          );
         })}
       </div>
     </Col>

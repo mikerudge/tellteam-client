@@ -1,7 +1,7 @@
 import React from 'react';
 import { withAuth } from '@8base/react-sdk';
 
-import { client } from '../../../../shared/api';
+import client from '../../../../shared/api';
 import * as gql from '../../../../shared/graphql';
 
 class CallbackContainer extends React.Component {
@@ -10,9 +10,8 @@ class CallbackContainer extends React.Component {
      * Auth headers for communicating with the 8base API.
      */
 
-    const t = await client.setIdToken(idToken);
+    await client.setIdToken(idToken);
 
-    console.log('idToken', idToken);
     /**
      * Check if user exists in 8base.
      */
@@ -38,8 +37,6 @@ class CallbackContainer extends React.Component {
     const authResult = await auth.authClient.getAuthorizedData();
     /* Identify or create user record using authenticated details */
     await this.handleAuthentication(authResult);
-
-    console.log('authResult.idToken', authResult.idToken);
 
     /* Add the idToken to the auth state */
     auth.authClient.setState({ token: authResult.idToken });
