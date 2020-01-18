@@ -5,6 +5,7 @@ import { LIST_MESSAGES_QUERY } from '../../shared/graphql';
 import ListPage from '../../components/ListPage';
 import { TableProps } from 'antd/lib/table';
 import moment from 'moment';
+import { Result, Button } from 'antd';
 
 type Message = {
   text: string;
@@ -12,6 +13,17 @@ type Message = {
 
 const MessagesSceneContainer: React.FC = () => {
   const { data, loading, error } = useQuery(LIST_MESSAGES_QUERY);
+
+  if (error) {
+    return (
+      <Result
+        status="500"
+        title="Oh No!"
+        subTitle="We seem to be having troubling getting your data"
+        extra={<Button type="primary">Back Home</Button>}
+      />
+    );
+  }
 
   const items = data?.notificationsList?.items ?? [];
 

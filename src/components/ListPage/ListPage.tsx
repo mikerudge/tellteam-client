@@ -45,7 +45,7 @@ const ListPage: React.FC<Props> = ({ heading, tableProps, Form }) => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2>{heading}</h2>
         <Button onClick={() => setShowModal(true)} icon="plus-circle" type="primary" shape="round">
-          New Action
+          New
         </Button>
       </div>
       <Table

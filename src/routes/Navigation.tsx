@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Icon, Typography } from 'antd';
+import { Layout, Menu, Icon, Typography, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { withAuth } from '@8base/react-sdk';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const Navigation = () => {
+const Navigation = (props: any) => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(['home']);
   // const { auth, client } = props;
@@ -25,15 +27,9 @@ const Navigation = () => {
 
   const navItems = [
     { key: 'home', href: '/home', icon: 'home', title: 'Home' },
-    { key: 'Message', href: '/messages', icon: 'message', title: 'Messages' },
-    { key: 'actions', href: '/actions', icon: 'arrow-right', title: 'actions' },
+    { key: 'members', href: '/members', icon: 'user', title: 'Members' },
+    { key: 'message', href: '/messages', icon: 'message', title: 'Messages' },
     { key: 'groups', href: '/groups', icon: 'contacts', title: 'Groups' },
-    {
-      key: 'templates',
-      href: '/templates',
-      icon: 'read',
-      title: 'Templales',
-    },
   ];
 
   return (
@@ -62,11 +58,25 @@ const Navigation = () => {
             </Menu.Item>
           );
         })}
+        <Menu.Item>
+          <Button
+            block
+            ghost
+            type="primary"
+            icon="logout"
+            onClick={async () => {
+              await props.client.clearStore();
+              props.auth.authClient.logout();
+            }}
+          >
+            Logout
+          </Button>
+        </Menu.Item>
       </Menu>
     </Sider>
   );
 };
 
-const WrappedNAv = withAuth(Navigation);
+const WrappedNavigation = compose(withApollo, withAuth)(Navigation);
 
-export default WrappedNAv;
+export default WrappedNavigation;

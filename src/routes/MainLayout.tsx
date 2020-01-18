@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Layout, Breadcrumb, Typography, PageHeader, Tag, Button } from 'antd';
+import { Layout, Breadcrumb, Typography, PageHeader, Tag, Button, Menu, Row, Icon } from 'antd';
 import SocialSidebar from './SocialSidebar';
 import Navigation from './Navigation';
 import { useQuery } from 'react-apollo';
@@ -11,25 +11,29 @@ const { Header, Content, Footer } = Layout;
 // import Navigation from '../components/Navigation';
 
 const MainLayout: React.FC = ({ children }) => {
-  const { data, loading, error } = useQuery<Get_Accounts_And_UserQuery>(CURRENT_USER_QUERY);
-
-  const user = data?.user;
-  const acccounts = data?.accountsList.items ?? [];
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation />
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }} />
-        <PageHeader
+        <Header style={{ background: '#fff', padding: 0 }}>
+          <Menu theme="light" mode="horizontal" style={{ lineHeight: '64px', float: 'right' }}>
+            <Menu.Item key="0">
+              <Icon type="notification" theme="outlined" />
+            </Menu.Item>
+            <Menu.Item key="1">
+              <Icon type="user" theme="outlined" />
+            </Menu.Item>
+          </Menu>
+        </Header>
+        {/* <PageHeader
           ghost={false}
           title={!loading && !error ? `Hi ${data?.user?.firstName ?? ''} ` : 'Hi!'}
           tags={acccounts.map(account => (
             <Tag color="green">{account.name}</Tag>
           ))}
-        />
+        /> */}
         <Content style={{ margin: '26px 26px' }}>{children}</Content>
-        <Footer style={{ textAlign: 'center' }}>TellTeam ©2020</Footer>
+        <Footer style={{ textAlign: 'center', color: '#a0aec0' }}>TellTeam ©2020</Footer>
       </Layout>
       {/* <SocialSidebar /> */}
     </Layout>

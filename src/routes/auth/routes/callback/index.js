@@ -3,6 +3,7 @@ import { withAuth } from '@8base/react-sdk';
 
 import client from '../../../../shared/api';
 import * as gql from '../../../../shared/graphql';
+import { Result, Button } from 'antd';
 
 class CallbackContainer extends React.Component {
   async handleAuthentication({ idToken, email }) {
@@ -23,11 +24,16 @@ class CallbackContainer extends React.Component {
        * thrown, which then the new user can be
        * created using the authResult values.
        */
-
-      await client.request(gql.USER_SIGN_UP_MUTATION, {
-        user: { email: email },
-        authProfileId: process.env.REACT_APP_AUTH_PROFILE_ID,
-      });
+      try {
+        await client.request(gql.USER_SIGN_UP_MUTATION, {
+          user: { email: email },
+          authProfileId: process.env.REACT_APP_AUTH_PROFILE_ID,
+        });
+      } catch (e) {
+        return (
+          <Result status="200" title="We're not taking on anymore users right now" subTitle="Thanks for signing up" />
+        );
+      }
     }
   }
 

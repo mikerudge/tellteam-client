@@ -6761,3 +6761,24 @@ export type Get_Accounts_And_UserQuery = { __typename?: 'Query' } & {
     items: Array<{ __typename?: 'Account' } & Pick<Account, 'id' | 'name'>>;
   };
 };
+
+export type Get_Account_MembersQueryVariables = {
+  id: Scalars['ID'];
+};
+
+export type Get_Account_MembersQuery = { __typename?: 'Query' } & {
+  account: Maybe<
+    { __typename?: 'Account' } & Pick<Account, 'id'> & {
+        admins: Maybe<
+          { __typename?: 'UserListResponse' } & {
+            items: Array<{ __typename?: 'User' } & Pick<User, 'email'>>;
+          }
+        >;
+        members: Maybe<
+          { __typename?: 'UserListResponse' } & {
+            items: Array<{ __typename?: 'User' } & Pick<User, 'id' | 'lastName' | 'firstName'>>;
+          }
+        >;
+      }
+  >;
+};
