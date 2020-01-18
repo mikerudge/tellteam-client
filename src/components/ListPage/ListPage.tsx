@@ -19,25 +19,20 @@ const ListPage: React.FC<Props> = ({ heading, tableProps, Form }) => {
     title: '',
     dataIndex: '',
     key: 'view',
+    width: 160,
     render: () => {
-      return <Button onClick={() => setShowModal(true)} icon="edit" shape="circle" type="primary" ghost />;
-    },
-  };
-
-  const deleteButton = {
-    title: '',
-    dataIndex: '',
-    key: 'remove',
-    render: () => {
-      return <Button icon="delete" ghost shape="circle" type="danger" />;
+      return (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button onClick={() => setShowModal(true)} icon="edit" shape="circle" type="primary" ghost />
+          <Button icon="delete" ghost shape="circle" type="danger" />
+        </div>
+      );
     },
   };
 
   const columns = tableProps.columns;
   const viewIndex = columns?.findIndex(col => col.key === 'view');
-  const removeIndex = columns?.findIndex(col => col.key === 'remove');
 
-  if (removeIndex && removeIndex < 0) columns?.push(deleteButton);
   if (viewIndex && viewIndex < 0) columns?.push(viewButton);
 
   return (

@@ -63,6 +63,22 @@ export const LIST_GROUPS_QUERY = gql`
     }
   }
 `;
+export const LIST_MEMBERS = gql`
+  query LIST_MEMBERS {
+    teamMembersList {
+      items {
+        id
+        firstName
+        lastName
+        createdAt
+        createdBy {
+          id
+          email
+        }
+      }
+    }
+  }
+`;
 
 export const LIST_MESSAGES_QUERY = gql`
   query GET_NOTIFICATIONS {
