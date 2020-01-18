@@ -8,7 +8,7 @@ type T = {
 
 interface Props {
   heading: string;
-  tableProps: TableProps<T>;
+  tableProps: any;
   Form?: any;
 }
 
@@ -31,7 +31,7 @@ const ListPage: React.FC<Props> = ({ heading, tableProps, Form }) => {
   };
 
   const columns = tableProps.columns;
-  const viewIndex = columns?.findIndex(col => col.key === 'view');
+  const viewIndex = columns?.findIndex((col: { key: string }) => col.key === 'view');
 
   if (viewIndex && viewIndex < 0) columns?.push(viewButton);
 

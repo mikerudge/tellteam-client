@@ -3,7 +3,7 @@ import { withAuth } from '@8base/react-sdk';
 
 import client from '../../../../shared/api';
 import * as gql from '../../../../shared/graphql';
-import { Result, Button } from 'antd';
+import { Result, Button, Spin } from 'antd';
 
 class CallbackContainer extends React.Component {
   async handleAuthentication({ idToken, email }) {
@@ -51,7 +51,11 @@ class CallbackContainer extends React.Component {
   }
 
   render() {
-    return <h2>Loading...</h2>;
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Spin />
+      </div>
+    );
   }
 }
 /* withAuth injects 'auth' prop into component */

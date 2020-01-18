@@ -5,7 +5,8 @@ import { LIST_MESSAGES_QUERY } from '../../shared/graphql';
 import ListPage from '../../components/ListPage';
 import { TableProps } from 'antd/lib/table';
 import moment from 'moment';
-import { Result, Button } from 'antd';
+import { Result, Button, Icon, Tag } from 'antd';
+import { User } from '../../shared/API_TYPES';
 
 type Message = {
   text: string;
@@ -31,7 +32,21 @@ const MessagesSceneContainer: React.FC = () => {
     {
       title: 'Content',
       dataIndex: 'text',
-      key: 'name',
+      key: 'content',
+    },
+    {
+      title: 'To',
+      dataIndex: 'users.items',
+      key: 'users',
+      render: (v: User[]) => {
+        return v.map((user: User) => {
+          return (
+            <Tag color="green">
+              {user.firstName} {user.lastName}
+            </Tag>
+          );
+        });
+      },
     },
 
     {
@@ -39,6 +54,29 @@ const MessagesSceneContainer: React.FC = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (v: string) => moment(v).format('DD/MM/YYYY'),
+    },
+    {
+      title: 'By',
+      dataIndex: 'createdBy',
+      key: 'createdBy',
+      render: (v: User) => {
+        return (
+          <Tag color="geekblue">
+            {v.firstName} {v.lastName}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: 'Delivered',
+      dataIndex: 'delivered',
+      key: 'delivered',
+      render: (v: string) => {
+        if (v) {
+          return <Icon type="check-circle" theme="twoTone" />;
+        }
+        return <Icon type="close-circle" theme="twoTone" twoToneColor="#eb2f96" />;
+      },
     },
   ];
 

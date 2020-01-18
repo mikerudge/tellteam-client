@@ -81,22 +81,24 @@ export const LIST_MEMBERS = gql`
 `;
 
 export const LIST_MESSAGES_QUERY = gql`
-  query GET_NOTIFICATIONS {
+  query GET_MESSAGES {
     notificationsList {
       items {
         id
-        createdAt
+        delivered
         text
+        createdAt
+        createdBy {
+          id
+          firstName
+          lastName
+        }
         users {
           items {
             id
             firstName
             lastName
           }
-        }
-        createdBy {
-          id
-          email
         }
       }
     }
