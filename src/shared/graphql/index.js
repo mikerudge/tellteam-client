@@ -63,6 +63,15 @@ export const LIST_GROUPS_QUERY = gql`
     }
   }
 `;
+
+export const DELETE_MEMBER_MUTATION = gql`
+  mutation DELETE_MEMBER($data: UserDeleteInput!) {
+    userDelete(data: $data) {
+      success
+    }
+  }
+`;
+
 export const LIST_MEMBERS = gql`
   query LIST_MEMBERS {
     usersList {

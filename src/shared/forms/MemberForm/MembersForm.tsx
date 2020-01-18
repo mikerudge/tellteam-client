@@ -1,7 +1,12 @@
 import React from 'react';
-import { User } from '../../shared/API_TYPES';
-import { Form, Input, Row, Select } from 'antd';
+import { useMutation } from 'react-apollo';
+import { Form, Input, Row, Select, message, Button } from 'antd';
+import { createMember } from './createMemberMutation';
+
+import { updateMemberMutation } from './updateMemberMutation';
+
 import { FormComponentProps } from 'antd/lib/form';
+import { User, MutationUserUpdateArgs, MutationUserCreateArgs } from '../../API_TYPES';
 
 interface Props extends FormComponentProps {
   user?: User;
@@ -33,12 +38,30 @@ const tailFormItemLayout = {
   },
 };
 
-const handleSubmit = () => {};
-
 const MembersForm: React.FC<Props> = ({ user, form }) => {
   const { getFieldDecorator } = form;
 
+  const [updateUser, { loading }] = useMutation<MutationUserUpdateArgs>(updateMemberMutation);
+  const [createUser, { loading: createUserLoading }] = useMutation<MutationUserCreateArgs>(createMember);
+
   const { Option } = Select;
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    form.validateFieldsAndScroll(async (err, values) => {
+      if (err) return message.warn('Check the form');
+      try {
+        if (user?.id) {
+          await updateUser({ variables: { data: { id: user?.id, ...values } } });
+          message.success('Updated the member');
+        } else {
+          await createUser({ variables: { data: values } });
+          message.success('Created new member');
+        }
+      } catch (e) {
+        message.error(e.message);
+      }
+    });
+  };
 
   return (
     <Form {...formItemLayout} onSubmit={handleSubmit}>
@@ -62,10 +85,6 @@ const MembersForm: React.FC<Props> = ({ user, form }) => {
           initialValue: user?.mobileNumber,
           rules: [
             {
-              type: 'phone',
-              message: 'The input is not valid Phone number',
-            },
-            {
               required: true,
               message: 'Please make sure the member has a number',
             },
@@ -83,6 +102,11 @@ const MembersForm: React.FC<Props> = ({ user, form }) => {
           </Select>
         )}
       </Form.Item>
+      <Row type="flex" justify="end">
+        <Button loading={loading || createUserLoading} type="primary" htmlType="submit">
+          {user?.id ? 'Update' : 'Create'}
+        </Button>
+      </Row>
     </Form>
   );
 };

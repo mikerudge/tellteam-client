@@ -33,7 +33,6 @@ type Props = {
 };
 
 const GroupsScene: React.FC<Props> = ({ data }) => {
-  console.log('data', data);
   return <Table columns={columns} dataSource={data} />;
 };
 

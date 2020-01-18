@@ -6,6 +6,7 @@ import { Result, Button } from 'antd';
 import { ColumnProps, TableProps } from 'antd/lib/table';
 import { Group } from '../../shared/API_TYPES';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const GroupsSceneContainer: React.FC = () => {
   const { loading, error, data } = useQuery(LIST_GROUPS_QUERY);
@@ -28,12 +29,8 @@ const GroupsSceneContainer: React.FC = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (v: string) => {
-        return (
-          <a href="#" style={{ fontWeight: 600 }}>
-            {v}
-          </a>
-        );
+      render: (v: string, r: Group) => {
+        return <Link to={`/groups/${r.id}`}>{v}</Link>;
       },
     },
 

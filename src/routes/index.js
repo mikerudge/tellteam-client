@@ -11,6 +11,7 @@ import MessagesScene from '../scenes/MessagesScene';
 import ActionsScene from '../scenes/ActionsScene';
 import MembersScene from '../scenes/MembersScene';
 import MembersDetailScene from '../scenes/MembersDetailScene';
+import GroupDetailSceneContainer from '../scenes/GroupsDetailScene';
 
 export default class Router extends React.PureComponent {
   render() {
@@ -22,6 +23,7 @@ export default class Router extends React.PureComponent {
             <Switch>
               <ProtectedRoute exact path="/" component={HomeScene} />
               <ProtectedRoute exact path="/groups" component={GroupsScene} />
+              <ProtectedRoute exact path="/groups/:id" component={GroupDetailSceneContainer} />
               <ProtectedRoute exact path="/messages" component={MessagesScene} />
               <ProtectedRoute exact path="/actions" component={ActionsScene} />
               <ProtectedRoute exact path="/members" component={MembersScene} />
