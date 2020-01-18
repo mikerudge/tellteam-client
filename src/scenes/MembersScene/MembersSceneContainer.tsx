@@ -4,6 +4,7 @@ import { useQuery } from 'react-apollo';
 import { LIST_MEMBERS } from '../../shared/graphql';
 import moment from 'moment';
 import { Result, Button } from 'antd';
+import { User } from '../../shared/API_TYPES';
 
 const MembersSceneContainer: React.FC = () => {
   const { data, loading, error } = useQuery(LIST_MEMBERS);
@@ -18,17 +19,17 @@ const MembersSceneContainer: React.FC = () => {
       />
     );
   }
-  console.log('data', data);
-  const members = data?.teamMembersList?.items ?? [];
+
+  const members = data?.usersList?.items ?? [];
 
   const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (v: string, r: any) => {
+      render: (v: string, r: User) => {
         return (
-          <a href="#" style={{ fontWeight: 600 }}>
+          <a href={`members/${r.id}`} style={{ fontWeight: 600 }}>
             {r.firstName} {r.lastName}
           </a>
         );

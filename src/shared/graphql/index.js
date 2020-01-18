@@ -65,16 +65,18 @@ export const LIST_GROUPS_QUERY = gql`
 `;
 export const LIST_MEMBERS = gql`
   query LIST_MEMBERS {
-    teamMembersList {
+    usersList {
       items {
         id
-        firstName
+        company
         lastName
+        firstName
+        email
+        carRegistrationNumbers
+        mobileNumber
         createdAt
-        createdBy {
-          id
-          email
-        }
+        status
+        updatedAt
       }
     }
   }
@@ -101,6 +103,38 @@ export const LIST_MESSAGES_QUERY = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query GET_USER_BY_ID($id: ID!) {
+    user(id: $id) {
+      id
+      email
+      createdAt
+      company
+      status
+      firstName
+      lastName
+      groups {
+        items {
+          id
+          name
+        }
+      }
+      notifications {
+        items {
+          id
+          text
+          createdAt
+        }
+      }
+      mobileNumber
+      avatar {
+        previewUrl
+      }
+      carRegistrationNumbers
     }
   }
 `;
