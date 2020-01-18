@@ -87,9 +87,12 @@ export const LIST_MESSAGES_QUERY = gql`
         id
         createdAt
         text
-        user {
-          firstName
-          lastName
+        users {
+          items {
+            id
+            firstName
+            lastName
+          }
         }
         createdBy {
           id
