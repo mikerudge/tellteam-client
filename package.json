@@ -20,10 +20,12 @@
     "customize-cra": "^0.9.1",
     "faker": "^4.1.0",
     "graphql": "^14.5.8",
+    "graphql-request": "^1.8.2",
     "graphql-tag": "^2.9.2",
     "handlebars": "^4.7.2",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
+    "mailgun-js": "^0.22.0",
     "moment": "^2.24.0",
     "react": "^16.12.0",
     "react-animated-css": "^1.2.1",
@@ -34,6 +36,8 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.3.0",
     "recompose": "^0.30.0",
+    "tellteam-email-template": "./server/email-template/",
+    "twilio": "^3.39.2",
     "typescript": "^3.7.4"
   },
   "scripts": {
@@ -41,7 +45,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
-    "eslint": "eslint src/**/*.js"
+    "eslint": "eslint src/**/*.js",
+    "test:trigger": "8base invoke-local notify -p src/triggers/notify/mocks/request.json"
   },
   "license": "MIT",
   "devDependencies": {

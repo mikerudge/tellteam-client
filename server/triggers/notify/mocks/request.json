@@ -1,0 +1,47 @@
+{
+  "data": {
+    "id": "ck5cz8f09007a07mnfgik24et",
+    "delivered": false,
+    "account": {
+      "id": "ck56yfrae01cg07jma361drto",
+      "name": "The Lads"
+    },
+    "text": "This is a notification, yo!",
+    "users": {
+      "items": [
+        {
+          "id": "ck56lrg0a000408mf7k4rgtae",
+          "firstName": "Owen",
+          "lastName": "Richards",
+          "mobileNumber": "07809357315",
+          "email": "owen@biglemon.co.uk",
+          "notificationPreferences": {
+            "items": [
+              {
+                "account": {
+                  "id": "ck56yfrae01cg07jma361drto"
+                },
+                "emailEnabled": true,
+                "sMSEnabled": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "ck5a4yq1p001t07la6zf9hzuo",
+          "firstName": "Mike",
+          "lastName": "Rudge",
+          "mobileNumber": "07809357315",
+          "email": "mikerudge@me.com",
+          "notificationPreferences": {
+            "items": []
+          }
+        }
+      ]
+    }
+  },
+  "headers": {
+    "x-header-1": "header value"
+  },
+  "body": "{\"foo\":\"bar\"}"
+}
