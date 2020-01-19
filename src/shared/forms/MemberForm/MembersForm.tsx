@@ -65,6 +65,28 @@ const MembersForm: React.FC<Props> = ({ user, form }) => {
 
   return (
     <Form {...formItemLayout} onSubmit={handleSubmit}>
+      <Form.Item label="First Name">
+        {getFieldDecorator('firstName', {
+          initialValue: user?.firstName,
+          rules: [
+            {
+              required: true,
+              message: 'Please input your E-mail!',
+            },
+          ],
+        })(<Input />)}
+      </Form.Item>
+      <Form.Item label="Last Name">
+        {getFieldDecorator('lastName', {
+          initialValue: user?.lastName,
+          rules: [
+            {
+              required: true,
+              message: 'Please input your E-mail!',
+            },
+          ],
+        })(<Input />)}
+      </Form.Item>
       <Form.Item label="E-mail">
         {getFieldDecorator('email', {
           initialValue: user?.email,
@@ -103,7 +125,7 @@ const MembersForm: React.FC<Props> = ({ user, form }) => {
         )}
       </Form.Item>
       <Row type="flex" justify="end">
-        <Button loading={loading || createUserLoading} type="primary" htmlType="submit">
+        <Button size="large" loading={loading || createUserLoading} type="primary" htmlType="submit">
           {user?.id ? 'Update' : 'Create'}
         </Button>
       </Row>

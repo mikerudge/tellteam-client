@@ -1,12 +1,14 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { LIST_GROUPS_QUERY } from '../../shared/graphql';
-import ListPage from '../../components/ListPage';
-import { Result, Button } from 'antd';
-import { ColumnProps, TableProps } from 'antd/lib/table';
-import { Group } from '../../shared/API_TYPES';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { Result, Button } from 'antd';
+
+import ListPage from '../../components/ListPage';
+
+import { LIST_GROUPS_QUERY } from '../../shared/graphql';
+
+import { Group } from '../../shared/API_TYPES';
 
 const GroupsSceneContainer: React.FC = () => {
   const { loading, error, data } = useQuery(LIST_GROUPS_QUERY);

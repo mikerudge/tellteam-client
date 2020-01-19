@@ -74,7 +74,7 @@ export const DELETE_MEMBER_MUTATION = gql`
 
 export const LIST_MEMBERS = gql`
   query LIST_MEMBERS {
-    usersList {
+    usersList(orderBy: firstName_ASC) {
       items {
         id
         company
@@ -93,7 +93,7 @@ export const LIST_MEMBERS = gql`
 
 export const LIST_MESSAGES_QUERY = gql`
   query GET_MESSAGES {
-    notificationsList {
+    notificationsList(orderBy: createdAt_DESC) {
       items {
         id
         delivered

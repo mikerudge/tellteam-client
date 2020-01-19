@@ -5,7 +5,7 @@ export const getGroupAndMembers = gql`
     group(id: $id) {
       id
       createdAt
-      members {
+      members(orderBy: firstName_ASC) {
         items {
           email
           firstName
