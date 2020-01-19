@@ -147,3 +147,25 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `;
+
+export const GET_NOTIFICATION_PREFERENCES = gql`
+  query GET_NOTIFICATION_PREFERENCES($id: ID! $accountId: ID!) {
+      notificationPreferencesList(first: 1, filter: {
+          id: { equals: $id }
+          account: {
+              id: { equals: $accountId }
+          }
+      }) {
+          count
+          items {
+              id
+              account {
+                  id
+                  name
+              }
+              emailEnabled
+              sMSEnabled
+          }
+      }
+  }
+`;

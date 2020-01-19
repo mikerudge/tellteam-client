@@ -1,0 +1,2 @@
+import UpdateNotificationPreferencesSceneContainer from './UpdateNotificationPreferencesSceneContainer';
+export default UpdateNotificationPreferencesSceneContainer;
