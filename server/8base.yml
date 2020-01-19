@@ -1,0 +1,11 @@
+functions:
+  notify:
+    type: trigger.after
+    handler:
+      code: src/triggers/notify/handler.js
+    operation: Notifications.create
+  createNotificationPreferences:
+    type: trigger.after
+    handler:
+      code: src/triggers/createNotificationPreferences/handler.ts
+    operation: Users.create

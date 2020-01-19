@@ -213,6 +213,7 @@ export default async (event, ctx) => {
         data: {
             ...event.data,
             delivered: true
-        }
+        },
+        errors: [],
     }
 }

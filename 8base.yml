@@ -1,6 +1,0 @@
-functions:
-  notify:
-    type: trigger.after
-    handler:
-      code: server/triggers/notify/handler.js
-    operation: Notifications.create
