@@ -11,12 +11,7 @@ if( !process.env.NODE_ENV ) process.env.NODE_ENV = 'production';
 
 const MUTE = process.env.MUTE_NOTIFICATIONS && process.env.MUTE_NOTIFICATIONS === 'true';
 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const FROM_NUMBER = '(901) 352-2292'
-
-const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
-const MAILGUN_DOMAIN = 'mg.tellteam.co.uk';
+const FROM_NUMBER = '(901) 352-2292';
 const FROM_EMAIL = 'no-reply@mg.tellteam.co.uk';
 
 /**
@@ -121,7 +116,7 @@ const sendSMSMessages = (users, text) => {
         ))
     )
 
-    // const client = Twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+    // const client = Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     //
     // const opts = {
     //     body: text,
@@ -188,8 +183,8 @@ const sendEmails = (users, text, accountName) => {
     )
 
     // const mailgun = Mailgun({
-    //     apiKey: MAILGUN_API_KEY,
-    //     domain: MAILGUN_DOMAIN,
+    //     apiKey: process.env.MAILGUN_API_KEY,
+    //     domain: 'mg.tellteam.co.uk',
     //     host: 'api.eu.mailgun.net',
     // });
     //
