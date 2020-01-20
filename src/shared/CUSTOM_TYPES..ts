@@ -2,6 +2,7 @@ type Variable = {
   key: string;
   type: string;
   placeholder: string;
+  default?: string;
 };
 
 export type Action = {

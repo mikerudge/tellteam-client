@@ -25,19 +25,6 @@ const formItemLayout = {
   },
 };
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 0,
-    },
-  },
-};
-
 const MembersForm: React.FC<Props> = ({ user, form }) => {
   const { getFieldDecorator } = form;
 
