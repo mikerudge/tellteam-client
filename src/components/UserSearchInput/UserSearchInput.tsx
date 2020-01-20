@@ -27,6 +27,7 @@ const UserSearchInput: React.FC = () => {
 
   return (
     <Select
+      size="large"
       labelInValue
       value={member}
       placeholder="Select members"

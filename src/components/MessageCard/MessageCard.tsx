@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Action } from '../../shared/CUSTOM_TYPES.';
 import CardHeader from '../CardHeader';
-import { Row, Input, Button } from 'antd';
+import { Row, Input, Button, message } from 'antd';
 import UserSearchInput from '../UserSearchInput';
 const Handlebars = require('handlebars');
 
 type Props = {
   action: Action;
   setSelectedCard: (args: boolean) => void;
+  animateOut: () => void
 };
 
-const MessageCard: React.FC<Props> = ({ action, setSelectedCard }) => {
+const MessageCard: React.FC<Props> = ({ action, setSelectedCard, animateOut }) => {
   const [vars, setVars] = useState<any>({ key: 'value' });
 
   const [loading, setLoading] = useState(false);
@@ -35,14 +36,21 @@ const MessageCard: React.FC<Props> = ({ action, setSelectedCard }) => {
 
   const template = Handlebars.compile(action?.message ?? '');
 
-  const message = template(vars);
+  const messageText = template(vars);
 
   const sendMessage = () => {
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      setSelectedCard(false);
+
+      animateOut();
+      setTimeout(() => {
+        setSelectedCard(false);
+      }, 1000);
+      const success = `${messageText} sent!`;
+
+      message.success(success);
     }, 3000);
   };
 
@@ -96,7 +104,7 @@ const MessageCard: React.FC<Props> = ({ action, setSelectedCard }) => {
             marginTop: '2rem',
           }}
         >
-          <p style={{ margin: '0' }}>{message}</p>
+          <p style={{ margin: '0' }}>{messageText}</p>
         </div>
       </Row>
       <Row type="flex" justify="end" align="middle" style={{ marginTop: '2rem' }}>

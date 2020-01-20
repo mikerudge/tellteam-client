@@ -6,11 +6,18 @@ import MessageCard from '../../components/MessageCard';
 
 const HomeScene: React.FC = () => {
   const [selectedAction, setSelectedAction] = useState();
+  const [shouldAnimate, setShouldAnimate] = useState(true);
 
   return (
     <Row style={{ width: '100%' }} type="flex" justify="start" align="top" gutter={[16, 24]}>
       <Col xs={24} sm={24} md={16} lg={12} xl={12}>
-        <ActivityCard selectedActionId={selectedAction?.key} onClick={action => setSelectedAction(action)} />
+        <ActivityCard
+          selectedActionId={selectedAction?.key}
+          onClick={action => {
+            setSelectedAction(action);
+            setShouldAnimate(true);
+          }}
+        />
       </Col>
       {selectedAction && (
         <Col xs={24} sm={24} md={16} lg={12} xl={12}>
@@ -18,9 +25,13 @@ const HomeScene: React.FC = () => {
             style={{ width: '100%' }}
             animationIn="bounceInRight"
             animationOut="bounceOutRight"
-            isVisible={!!selectedAction}
+            isVisible={shouldAnimate}
           >
-            <MessageCard setSelectedCard={setSelectedAction} action={selectedAction} />
+            <MessageCard
+              setSelectedCard={setSelectedAction}
+              action={selectedAction}
+              animateOut={() => setShouldAnimate(false)}
+            />
           </Animated>
         </Col>
       )}
