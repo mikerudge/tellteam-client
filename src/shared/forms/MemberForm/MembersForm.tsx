@@ -113,16 +113,16 @@ const MembersForm: React.FC<Props> = ({ user, form }) => {
           ],
         })(<Input />)}
       </Form.Item>
-      <Form.Item label="Status" hasFeedback validateStatus={user?.status === 'active' ? 'success' : 'warning'}>
-        {getFieldDecorator('status', {
-          initialValue: user?.status,
-        })(
-          <Select>
-            <Option value="active">Active</Option>
-            <Option value="waiting">Waiting</Option>
-            <Option value="unsubscribed">Unsubscribed</Option>
-          </Select>
-        )}
+      <Form.Item label="Company">
+        {getFieldDecorator('company', {
+          initialValue: user?.company,
+          rules: [
+            {
+              required: false,
+              message: 'Please make sure the member has a number',
+            },
+          ],
+        })(<Input />)}
       </Form.Item>
       <Row type="flex" justify="end">
         <Button size="large" loading={loading || createUserLoading} type="primary" htmlType="submit">
