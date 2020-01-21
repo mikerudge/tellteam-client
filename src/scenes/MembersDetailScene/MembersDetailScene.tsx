@@ -41,7 +41,14 @@ const MembersDetailScene: React.FC<Props> = ({ user, messages, groups }) => {
             <div className="card-container">
               <PageHeader title="Messages" />
               <Table showHeader={false} pagination={false} dataSource={messages}>
-                <Column title="Text" dataIndex="text" key="text" />
+                <Column
+                  title="Text"
+                  dataIndex="text"
+                  key="text"
+                  render={(v, r: Notification) => {
+                    return <Link to={`/messages/${r.id}`}>{v}</Link>;
+                  }}
+                />
               </Table>
             </div>
           </Col>

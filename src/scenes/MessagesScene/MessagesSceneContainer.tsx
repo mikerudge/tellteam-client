@@ -6,7 +6,8 @@ import ListPage from '../../components/ListPage';
 import { TableProps } from 'antd/lib/table';
 import moment from 'moment';
 import { Result, Button, Icon, Tag } from 'antd';
-import { User } from '../../shared/API_TYPES';
+import { User, Notification } from '../../shared/API_TYPES';
+import { Link } from 'react-router-dom';
 
 type Message = {
   text: string;
@@ -30,9 +31,12 @@ const MessagesSceneContainer: React.FC = () => {
 
   const columns = [
     {
-      title: 'Content',
+      title: 'Message',
       dataIndex: 'text',
       key: 'content',
+      render: (v: string, r: Notification) => {
+        return <Link to={`/messages/${r.id}`}>{v}</Link>;
+      },
     },
     {
       title: 'To',
