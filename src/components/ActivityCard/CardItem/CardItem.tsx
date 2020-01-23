@@ -1,5 +1,4 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Action } from '../../../shared/CUSTOM_TYPES.';
 
 type Props = {
@@ -21,7 +20,7 @@ const CardItem: React.FC<Props> = ({ onClick, action, selected }) => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: selected ? '#4a5568' : '#f0f2f5',
+        backgroundColor: selected ? '#5299EA' : '#edf2f7',
         padding: '1.2rem',
         borderRadius: '10px',
         marginBottom: '0.9rem',
@@ -35,7 +34,7 @@ const CardItem: React.FC<Props> = ({ onClick, action, selected }) => {
           <h3 style={{ margin: 0, fontWeight: 600, textTransform: 'uppercase', color: selected ? 'white' : '' }}>
             {action.title}
           </h3>
-          <p style={{ margin: 0, fontWeight: 600, color: '#a0aec0' }}>{action.description}</p>
+          <p style={{ margin: 0, fontWeight: 600, color: selected ? '#C4DCF8' : '#a0aec0' }}>{action.description}</p>
         </div>
       </div>
     </div>

@@ -15,15 +15,15 @@ const MainLayout: React.FC = ({ children }) => {
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation />
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }}>
-          <Menu theme="light" mode="horizontal" style={{ lineHeight: '64px', float: 'right' }}>
+        <Header style={{ background: '#5299EA', padding: 0 }}>
+          {/* <Menu theme="light" mode="horizontal" style={{ lineHeight: '64px', float: 'right', background: '#034A4A' }}>
             <Menu.Item key="0">
               <Icon type="notification" theme="outlined" />
             </Menu.Item>
             <Menu.Item key="1">
               <Icon type="user" theme="outlined" />
             </Menu.Item>
-          </Menu>
+          </Menu> */}
         </Header>
         {/* <PageHeader
           ghost={false}

@@ -39,10 +39,11 @@ const Navigation = (props: any) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '1.2rem',
+          background: '#5299EA',
+          height: '64px',
         }}
       >
-        <Typography.Title level={4}>TellTeam</Typography.Title>
+        <img src="./logo.svg" style={{ height: '20px' }} />
       </div>
 
       <Menu defaultSelectedKeys={['home']} theme="light" mode="inline" selectedKeys={selectedKeys}>
