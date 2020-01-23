@@ -4,8 +4,15 @@ functions:
     handler:
       code: src/triggers/notify/handler.js
     operation: Notifications.create
-  createNotificationPreferences:
-    type: trigger.after
+  createNotificationPreferencesFromUpdatingAccountUsers:
+    type: trigger.before
     handler:
-      code: src/triggers/createNotificationPreferences/handler.ts
-    operation: Users.create
+      code: >-
+        src/triggers/createNotificationPreferencesFromUpdatingAccountUsers/handler.ts
+    operation: Accounts.update
+  removeNotificationPreferencesFromUpdatingAccountUsers:
+    type: trigger.before
+    handler:
+      code: >-
+        src/triggers/removeNotificationPreferencesFromUpdatingAccountUsers/handler.ts
+    operation: Accounts.update
