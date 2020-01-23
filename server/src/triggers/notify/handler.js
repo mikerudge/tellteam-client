@@ -3,22 +3,26 @@ import * as Twilio from 'twilio';
 import fetch from 'node-fetch';
 import { config } from 'dotenv';
 
+const path = require('path');
+
 import { getTemplate } from 'tellteam-email-template';
 
-config({ path: '/.env.local' });
+config({ path: path.resolve(process.cwd(), '..', '.env.local') })
 
 if( !process.env.NODE_ENV ) process.env.NODE_ENV = 'production';
 
 const MUTE = process.env.MUTE_NOTIFICATIONS && process.env.MUTE_NOTIFICATIONS === 'true';
 
 const FROM_NUMBER = '(901) 352-2292';
-const FROM_EMAIL = 'no-reply@mg.tellteam.co.uk';
+const FROM_EMAIL = 'notifications@tellteam.co.uk';
+
+// console.log( process.env.NODE_ENV, MUTE )
 
 /**
  * Query to get the notification and the data required
  * @type {string}
  */
-const QUERY  = `
+const GET_NOTIFICATION_QUERY  = `
 query getNotificationUsers($id: ID!) {
   notification(id: $id) {
     id
@@ -51,6 +55,22 @@ query getNotificationUsers($id: ID!) {
 `
 
 /**
+ * Mutation to update the notification
+ * @type {string}
+ */
+const UPDATE_NOTIFICATION_MUTATION  = `
+mutation notificationUpdate(
+  $data: NotificationUpdateInput!
+  $filter: NotificationKeyFilter!
+) {
+  notificationUpdate(data: $data, filter: $filter) {
+    id
+    text
+  }
+}
+`
+
+/**
  * Simplify the user object to get the preferences
  * @param user
  * @param accountId
@@ -70,16 +90,20 @@ const getNotificationPreference = (user, accountId) => (
 const sendClicksendRequest = (endpoint, body) => {
     const method = 'POST';
     const url = 'https://rest.clicksend.com/v3/'+endpoint
-    const basic = Buffer.from(`biglemon:${CLICKSEND_API_KEY}`).toString('base64');
-    return fetch({
+
+    const basic = Buffer.from(`owen@biglemon.co.uk:${process.env.CLICKSEND_API_KEY}`).toString('base64');
+
+    return fetch(url,{
         method,
-        url,
         headers: {
-            Authorization: `Basic ${basic}`
-        }
+            Authorization: `Basic ${basic}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
     })
       .then(async res => {
           const body = await res.json();
+          console.log( res, body )
           if( !res.ok ) throw body;
           return body;
       })
@@ -166,7 +190,7 @@ const sendEmails = (users, text, accountName) => {
     return Promise.all(
       users.map(user => (
         sendClicksendRequest('email/send', {
-            to: user.email,
+            to: [user.email],
             from: {
                 name: accountName,
                 email: FROM_EMAIL
@@ -227,7 +251,7 @@ export default async (event, ctx) => {
     let notification;
     let users;
     try {
-        const { notification: data } = await ctx.api.gqlRequest(QUERY, { id }, { checkPermissions:false });
+        const { notification: data } = await ctx.api.gqlRequest(GET_NOTIFICATION_QUERY, { id }, { checkPermissions:false });
         if( !data ) return;
         users = data.users.items;
         notification = data;
@@ -253,13 +277,22 @@ export default async (event, ctx) => {
 
     // Send a notification to them by Email
     await sendEmails(emailUsers, text, account.name);
+    return event;
 
     // Send a notification to them by SMS
     await sendSMSMessages(phoneNumberUsers, text);
 
-    console.log('all done! returning with { delivered: true }')
+    // It's not updating the delivered value for some reason, so doing it manually here
+    await ctx.api.gqlRequest(UPDATE_NOTIFICATION_MUTATION, {
+      data: {
+        delivered: true
+      },
+      filter: {
+        id,
+      }
+    }, { checkPermissions:false });
 
-    // TODO: It's not updating the delivered value for some reason
+    console.log('all done! returning with { delivered: true }')
 
     // Return the notification as sent
     return {

@@ -17,8 +17,10 @@
     "apollo-client": "^2.6.4",
     "axios": "^0.19.1",
     "babel-plugin-import": "^1.13.0",
+    "clicksend": "^5.0.37",
     "customize-cra": "^0.9.1",
     "faker": "^4.1.0",
+    "fs": "^0.0.1-security",
     "graphql": "^14.5.8",
     "graphql-request": "^1.8.2",
     "graphql-tag": "^2.9.2",
@@ -28,6 +30,7 @@
     "mailgun-js": "^0.22.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
+    "path": "^0.12.7",
     "react": "^16.12.0",
     "react-animated-css": "^1.2.1",
     "react-apollo": "3.1.1",
@@ -47,7 +50,7 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "eslint": "eslint src/**/*.js",
-    "test:trigger": "8base invoke-local notify -p server/src/triggers/notify/mocks/request.json"
+    "test:trigger": "cd server && 8base invoke-local notify -p src/triggers/notify/mocks/request.json"
   },
   "license": "MIT",
   "devDependencies": {
