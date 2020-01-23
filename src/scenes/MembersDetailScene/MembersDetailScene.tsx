@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, Notification, Group } from '../../shared/API_TYPES';
 import { Row, Col, PageHeader, Avatar, Table } from 'antd';
-import WrappedMembersForm from '../../shared/forms/MemberForm';
+import MembersForm from '../../shared/forms/MemberForm';
 import { Animated } from 'react-animated-css';
 import Column from 'antd/lib/table/Column';
 import { Link } from 'react-router-dom';
@@ -20,13 +20,13 @@ const MembersDetailScene: React.FC<Props> = ({ user, messages, groups }) => {
       <Animated animationIn="bounceInLeft" animationOut="bounceOutLeft" isVisible={!!user}>
         <Col xs={24} sm={24} md={16} lg={12} xl={12}>
           <div className="card-container">
-            <Row type="flex" align="middle" justify="center">
+            <Row type="flex" align="middle" justify="start" gutter={[24, 24]} style={{ marginBottom: '2rem' }}>
               <Avatar size="large" shape="circle" src={user?.avatar?.previewUrl ?? ''} />
               <PageHeader title={fullName} />
             </Row>
 
             <Row>
-              <WrappedMembersForm user={user} />
+              <MembersForm user={user} />
             </Row>
           </div>
         </Col>
@@ -41,7 +41,14 @@ const MembersDetailScene: React.FC<Props> = ({ user, messages, groups }) => {
             <div className="card-container">
               <PageHeader title="Messages" />
               <Table showHeader={false} pagination={false} dataSource={messages}>
-                <Column title="Text" dataIndex="text" key="text" />
+                <Column
+                  title="Text"
+                  dataIndex="text"
+                  key="text"
+                  render={(v, r: Notification) => {
+                    return <Link to={`/messages/${r.id}`}>{v}</Link>;
+                  }}
+                />
               </Table>
             </div>
           </Col>

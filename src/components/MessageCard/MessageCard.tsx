@@ -1,51 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Action } from '../../shared/CUSTOM_TYPES.';
 import CardHeader from '../CardHeader';
-import { Row, Input, Button } from 'antd';
+import { Row, Input, Button, message } from 'antd';
 import UserSearchInput from '../UserSearchInput';
 const Handlebars = require('handlebars');
 
 type Props = {
   action: Action;
   setSelectedCard: (args: boolean) => void;
+  animateOut: () => void
 };
 
-const MessageCard: React.FC<Props> = ({ action, setSelectedCard }) => {
+const MessageCard: React.FC<Props> = ({ action, setSelectedCard, animateOut }) => {
+  const [vars, setVars] = useState<any>({ key: 'value' });
+
   const [loading, setLoading] = useState(false);
 
-  // const template = Handlebars.compile(action?.message);
+  useEffect(() => {
+    let defaultState: any;
+    const variables = action.variables ?? [];
+    console.log('variables', action.variables);
 
-  // let message = action.message;
+    variables.forEach(li => {
+      console.log('li', li);
+      if (defaultState) {
+        const newState = { ...defaultState, [li.key]: li.default ?? '' };
+        defaultState = newState;
+      } else {
+        defaultState = { [li.key]: li.default ?? '' };
+      }
+    });
 
-  // message = template({ guestName: null });
+    setVars(defaultState);
+  }, []);
+
+  const template = Handlebars.compile(action?.message ?? '');
+
+  const messageText = template(vars);
 
   const sendMessage = () => {
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      setSelectedCard(false);
+
+      animateOut();
+      setTimeout(() => {
+        setSelectedCard(false);
+      }, 1000);
+      const success = `${messageText} sent!`;
+
+      message.success(success);
     }, 3000);
+  };
+
+  const updateVar = (key: string, value: string) => {
+    const newVars = { ...vars, [key]: value };
+
+    setVars(newVars);
   };
 
   return (
     <div className="card-container">
       <CardHeader title={action?.title || 'Title'} />
       <Row type="flex" justify="start" align="middle">
-        <p style={{ width: '10px' }}>To:</p>
+        <h4 style={{ width: '10px' }}>To:</h4>
         <UserSearchInput />
       </Row>
-      <Row type="flex" justify="start" align="middle">
-        {action?.variables?.map(variable => {
-          return (
-            <Input
-              key={variable.key}
-              style={{ marginTop: '15px', marginBottom: '5px' }}
-              placeholder={variable.placeholder}
-            />
-          );
-        })}
-      </Row>
+      {action?.variables && (
+        <Row type="flex" justify="start" align="middle">
+          <div style={{ marginTop: '2rem' }}>
+            <h4>Variable(s)</h4>
+            {action?.variables?.map(variable => {
+              const { key } = variable;
+
+              let value = vars[key] ?? '';
+
+              return (
+                <Input
+                  value={value}
+                  key={key}
+                  onChange={e => updateVar(key, e.target.value)}
+                  style={{ marginBottom: '5px' }}
+                  placeholder={variable.placeholder}
+                />
+              );
+            })}
+          </div>
+        </Row>
+      )}
       <Row type="flex" justify="start" align="middle">
         <div
           style={{
@@ -61,7 +104,7 @@ const MessageCard: React.FC<Props> = ({ action, setSelectedCard }) => {
             marginTop: '2rem',
           }}
         >
-          <p style={{ margin: '0' }}>{action?.message}</p>
+          <p style={{ margin: '0' }}>{messageText}</p>
         </div>
       </Row>
       <Row type="flex" justify="end" align="middle" style={{ marginTop: '2rem' }}>

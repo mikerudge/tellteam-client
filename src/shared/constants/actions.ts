@@ -6,15 +6,18 @@ const actions: Action[] = [
     key: 'bhaksd',
     title: 'GUEST ARRIVED',
     description: 'Let member know their guest has arrived',
-    message: 'Hi, your guest {{#if guestName}} {{guestName}} {{/if}} has just arrived at reception',
-    variables: [{ key: 'guestName', type: 'text', placeholder: 'Guest Name (optional)' }],
+    message: 'Hi, your guest {{#if guestName}} {{guestName}} {{/if}} has just arrived at {{placeName}}',
+    variables: [
+      { key: 'guestName', type: 'text', placeholder: 'Guest Name (optional)' },
+      { key: 'placeName', default: 'reception', type: 'text', placeholder: 'Reception' },
+    ],
   },
   {
     id: 'car_parked',
     key: 'CAR PARKED INCORRECTLY',
     title: 'CAR PARKED INCORRECTLY',
     description: 'Ask member to move their car',
-    message: 'We have had reports of your car {{carReg}} being parked against our rules. Please can you move it ASAP',
+    message: 'We have had reports of your car ({{carReg}}) being parked against our rules. Please can you move it ASAP',
     variables: [{ key: 'carReg', type: 'text', placeholder: 'CA18 YTR' }],
   },
   {
