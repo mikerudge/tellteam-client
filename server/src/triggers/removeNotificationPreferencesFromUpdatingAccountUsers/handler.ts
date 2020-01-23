@@ -10,6 +10,9 @@ type TriggerResult = {
   errors: Array<object>,
 };
 
+/**
+ * Mutation to remove a notification preference object
+ */
 const REMOVE_NOTIFICATION_PREFERENCES = `
   mutation notificationPreferenceDelete($data: NotificationPreferenceDeleteInput!) {
     notificationPreferenceDelete(data:$data) {
@@ -23,7 +26,7 @@ export default async (event: any, ctx: any) : Promise<TriggerResult> => {
   const { data } = event;
   if( !data ) return event;
 
-  const { id, members } = data
+  const { id, members } = data;
 
   // TODO: Check if members have been removed
   const user = members[0];

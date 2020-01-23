@@ -10,6 +10,33 @@ type TriggerResult = {
   errors: Array<object>,
 };
 
+/**
+ * Mutation to create a notification preference object
+ */
+const GET_ACCOUNT_MEMBERS = `
+  query getAccount($id: ID!) {
+    account(id: $id) {
+      id
+      members {
+        items {
+          id
+          email
+          notificationPreferences(filter:{
+            account:{
+              id: { equals: $id }
+            }
+          }) {
+            count
+          }
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Mutation to create a notification preference object
+ */
 const CREATE_NOTIFICATION_PREFERENCES = `
   mutation notificationPreferenceCreate($data: NotificationPreferenceCreateInput!) {
     notificationPreferenceCreate(data:$data) {
@@ -20,22 +47,41 @@ const CREATE_NOTIFICATION_PREFERENCES = `
 
 export default async (event: any, ctx: any) : Promise<TriggerResult> => {
 
+    console.log( event )
+
     const { data } = event;
     if( !data ) return event;
+    const { id } = data;
 
-    const { id, members } = data
+    const { data: account } = await ctx.api.gqlRequest(GET_ACCOUNT_MEMBERS, { id  }, { checkPermissions:false });
 
-    // TODO: Check if members have been added
-    const user = members[0];
+    if( !account.members.length ) return event;
 
-    // TODO: Make sure they don't have preferences already for this account
+    const membersWithoutPreferences = account.members.map((member: any) => !member.notificationPreferences.count);
+    if( !membersWithoutPreferences.length ) return event;
 
-    await ctx.api.gqlRequest(CREATE_NOTIFICATION_PREFERENCES, {
-      data: {
-        sMSEnabled: !!user.mobileNumber,
-        emailEnabled: !!user.email,
-      }
-    }, { checkPermissions:false });
+    await Promise.all(
+      membersWithoutPreferences.map((user: any) => (
+        ctx.api.gqlRequest(CREATE_NOTIFICATION_PREFERENCES, {
+          data: {
+            user: {
+              connect: {
+                id: user.id,
+              }
+            },
+            account: {
+              connect: {
+                id: account.id
+              }
+            },
+            sMSEnabled: !!user.mobileNumber,
+            emailEnabled: !!user.email,
+          }
+        }, { checkPermissions:false })
+      ))
+    )
+
+    // TODO: NEEDS TESTING!
 
     return event;
 
