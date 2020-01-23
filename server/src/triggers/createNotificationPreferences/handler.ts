@@ -4,23 +4,22 @@
  */
 
 type TriggerResult = {
-  data: {
-    result: string,
-  },
+  data: Object,
   errors: Array<object>,
 };
 
 export default async (event: any, ctx: any) : Promise<TriggerResult> => {
 
-  // TODO: Make a new notification preference file
+  const { data } = event;
+  if( !data ) return event;
+
+  const { id } = data;
+
+  // TODO: Check user's roles
+  // TODO: Make a new notification preference record
 
   return {
-    data: {
-      ...event.data,
-      notificationPreferences: {
-
-      }
-    },
-    errors: [],
+    data: event.data,
+    errors: []
   };
 };
