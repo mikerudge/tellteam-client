@@ -27,9 +27,7 @@
     "handlebars": "^4.7.2",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
-    "mailgun-js": "^0.22.0",
     "moment": "^2.24.0",
-    "node-fetch": "^2.6.0",
     "path": "^0.12.7",
     "react": "^16.12.0",
     "react-animated-css": "^1.2.1",
@@ -41,7 +39,6 @@
     "react-scripts": "^3.3.0",
     "recompose": "^0.30.0",
     "tellteam-email-template": "./server/email-template/",
-    "twilio": "^3.39.2",
     "typescript": "^3.7.4"
   },
   "scripts": {

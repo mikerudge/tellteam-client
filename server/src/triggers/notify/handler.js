@@ -1,7 +1,5 @@
-import * as Mailgun from 'mailgun-js';
-import * as Twilio from 'twilio';
-import fetch from 'node-fetch';
 import { config } from 'dotenv';
+import * as clicksend from 'clicksend';
 
 const path = require('path');
 
@@ -13,10 +11,7 @@ if( !process.env.NODE_ENV ) process.env.NODE_ENV = 'production';
 
 const MUTE = process.env.MUTE_NOTIFICATIONS && process.env.MUTE_NOTIFICATIONS === 'true';
 
-const FROM_NUMBER = '(901) 352-2292';
-const FROM_EMAIL = 'notifications@tellteam.co.uk';
-
-// console.log( process.env.NODE_ENV, MUTE )
+const FROM_EMAIL_ID = 8099;
 
 /**
  * Query to get the notification and the data required
@@ -41,6 +36,7 @@ query getNotificationUsers($id: ID!) {
         email
         notificationPreferences(filter: {OR: [{emailEnabled: {equals: true}}, {sMSEnabled: {equals: true}}]}) {
           items {
+            preferenceId: id
             account {
               id
             }
@@ -82,36 +78,6 @@ const getNotificationPreference = (user, accountId) => (
 
 
 /**
- * Send a Clicksend request with auth and stuff
- * @param endpoint
- * @param body
- * @returns {Promise<T | void>}
- */
-const sendClicksendRequest = (endpoint, body) => {
-    const method = 'POST';
-    const url = 'https://rest.clicksend.com/v3/'+endpoint
-
-    const basic = Buffer.from(`owen@biglemon.co.uk:${process.env.CLICKSEND_API_KEY}`).toString('base64');
-
-    return fetch(url,{
-        method,
-        headers: {
-            Authorization: `Basic ${basic}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body)
-    })
-      .then(async res => {
-          const body = await res.json();
-          console.log( res, body )
-          if( !res.ok ) throw body;
-          return body;
-      })
-      .catch(console.error)
-}
-
-
-/**
  * Do the action to send the SMS messages
  * @param users
  * @param text
@@ -119,7 +85,10 @@ const sendClicksendRequest = (endpoint, body) => {
  */
 const sendSMSMessages = (users, text) => {
 
-    if( !users || !users.length ) return Promise.resolve();
+    if( !users || !users.length ) {
+        console.log("No users to send an SMS to")
+        return Promise.resolve();
+    }
 
     if( MUTE ) {
         console.log(`muted - not sending ${users.length} SMS messages`)
@@ -128,35 +97,20 @@ const sendSMSMessages = (users, text) => {
 
     console.log('sending SMS messages to ', users.length)
 
-    return Promise.all(
-        users
-          .map(user => (
-            sendClicksendRequest('sms/send', {
-                from: FROM_NUMBER,
-                body: text,
-                to: user.mobileNumber,
-                source: 'trigger'
-            })
-        ))
-    )
+    const smsApi = new clicksend.SMSApi("owen@biglemon.co.uk", process.env.CLICKSEND_API_KEY);
+    const smsCollection = new clicksend.SmsMessageCollection();
+    smsCollection.messages = users.map(user => {
+        const smsMessage = new clicksend.SmsMessage();
+        smsMessage.source = "trigger";
+        smsMessage.to = user.mobileNumber;
+        smsMessage.body = text;
+        return smsMessage
+    })
 
-    // const client = Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-    //
-    // const opts = {
-    //     body: text,
-    //     from: FROM_NUMBER,
-    // }
-    //
-    // return Promise.all(
-    //     numbers.map(to => (
-    //         client.messages
-    //             .create({
-    //                 ...opts,
-    //                 to
-    //             })
-    //             .catch(console.error)
-    //     ))
-    // )
+    return smsApi
+        .smsSendPost(smsCollection)
+        .then(res => console.log(res.body))
+        .catch(err => console.error(body));
 
 }
 
@@ -164,21 +118,15 @@ const sendSMSMessages = (users, text) => {
  * Do the action to send the emails
  * @param users
  * @param text
- * @param accountName
+ * @param account
  * @returns {Promise<unknown>|Promise<void>}
  */
-const sendEmails = (users, text, accountName) => {
+const sendEmails = (users, text, account) => {
 
-    if( !users || !users.length ) return Promise.resolve();
-
-    const subject = 'New notification from ' + accountName;
-    const optOutUrl = 'https://tellteam.co.uk'; // TODO: Need this URL
-
-    const html = getTemplate()
-      .replace("{{subject}}", subject)
-      .replace("{{accountName}}", accountName)
-      .replace("{{content}}", text)
-      .replace("{{optOutUrl}}", optOutUrl);
+    if( !users || !users.length ) {
+      console.log("No users to email")
+      return Promise.resolve();
+    }
 
     if( MUTE ) {
         console.log(`muted - not sending ${users.length} emails`)
@@ -187,47 +135,46 @@ const sendEmails = (users, text, accountName) => {
 
     console.log('sending emails to ', users.length)
 
-    return Promise.all(
-      users.map(user => (
-        sendClicksendRequest('email/send', {
-            to: [user.email],
-            from: {
-                name: accountName,
-                email: FROM_EMAIL
-            },
-            body: html,
-            name: user.firstName+' '+user.lastName,
-            email: user.email,
-            subject,
-            content: html,
-            type: 'text/html',
-            content_id: '',
-        })
-      ))
-    )
+    const subject = 'New notification from ' + account.name;
 
-    // const mailgun = Mailgun({
-    //     apiKey: process.env.MAILGUN_API_KEY,
-    //     domain: 'mg.tellteam.co.uk',
-    //     host: 'api.eu.mailgun.net',
-    // });
-    //
-    // const data = {
-    //     from: MAILGUN_FROM,
-    //     to: emails.join(","),
-    //     subject,
-    //     text,
-    //     html,
-    // };
-    //
-    // return new Promise((resolve, reject) => {
-    //     resolve();
-    //     mailgun.messages().send(data, (error, body) => {
-    //         console.log(error, body);
-    //         if( error ) reject(error);
-    //         resolve()
-    //     });
-    // })
+    const emailTransactionalApi = new clicksend.TransactionalEmailApi("owen@biglemon.co.uk", process.env.CLICKSEND_API_KEY);
+
+    return Promise.all(
+        users.map(user => {
+
+          const preferencesId = user.preferenceId;
+          const optOutUrl = process.env.PUBLIC_URL+`/notification-preferences/${preferencesId}/account/${account.id}`;
+
+          const html = getTemplate()
+            .replace("{{subject}}", subject)
+            .replace("{{accountName}}", account.name)
+            .replace("{{content}}", text)
+            .replace("{{optOutUrl}}", optOutUrl);
+
+          const emailRecipient = new clicksend.EmailRecipient();
+          emailRecipient.email = user.email;
+          emailRecipient.name = user.firstName+" "+user.lastName;
+
+          var emailFrom = new clicksend.EmailFrom();
+          emailFrom.emailAddressId = FROM_EMAIL_ID;
+          emailFrom.name = account.name;
+
+          var email = new clicksend.Email();
+
+          email.to = [emailRecipient];
+          // email.cc = [emailRecipient];
+          // email.bcc = [emailRecipient];
+          email.from = emailFrom;
+          email.subject = subject;
+          email.body = html;
+
+          return emailTransactionalApi
+            .emailSendPost(email)
+            .then(res => console.log(res.body))
+            .catch(err => console.error(body));
+
+        })
+    )
 
 }
 
@@ -276,8 +223,7 @@ export default async (event, ctx) => {
     const phoneNumberUsers = userPreferences.filter(user => user.sMSEnabled && !!user.mobileNumber);
 
     // Send a notification to them by Email
-    await sendEmails(emailUsers, text, account.name);
-    return event;
+    await sendEmails(emailUsers, text, account);
 
     // Send a notification to them by SMS
     await sendSMSMessages(phoneNumberUsers, text);
@@ -292,7 +238,7 @@ export default async (event, ctx) => {
       }
     }, { checkPermissions:false });
 
-    console.log('all done! returning with { delivered: true }')
+    console.log('all done!')
 
     // Return the notification as sent
     return {
