@@ -21,6 +21,7 @@ const GET_ACCOUNT_MEMBERS = `
         items {
           id
           email
+          mobileNumber
           notificationPreferences(filter:{
             account:{
               id: { equals: $id }
@@ -47,17 +48,16 @@ const CREATE_NOTIFICATION_PREFERENCES = `
 
 export default async (event: any, ctx: any) : Promise<TriggerResult> => {
 
-    console.log( event )
-
     const { data } = event;
     if( !data ) return event;
     const { id } = data;
 
-    const { data: account } = await ctx.api.gqlRequest(GET_ACCOUNT_MEMBERS, { id  }, { checkPermissions:false });
+    const { account } = await ctx.api.gqlRequest(GET_ACCOUNT_MEMBERS, { id }, { checkPermissions:false });
 
-    if( !account.members.length ) return event;
+    if( !account || !account.members?.items?.length ) return event;
 
-    const membersWithoutPreferences = account.members.map((member: any) => !member.notificationPreferences.count);
+    const membersWithoutPreferences = account.members.items.filter((member: any) => !member.notificationPreferences.count);
+
     if( !membersWithoutPreferences.length ) return event;
 
     await Promise.all(
@@ -80,8 +80,6 @@ export default async (event: any, ctx: any) : Promise<TriggerResult> => {
         }, { checkPermissions:false })
       ))
     )
-
-    // TODO: NEEDS TESTING!
 
     return event;
 
