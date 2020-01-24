@@ -31,9 +31,7 @@ const GroupsSceneContainer: React.FC = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (v: string, r: Group) => {
-        return <Link to={`/groups/${r.id}`}>{v}</Link>;
-      },
+      render: (v: string, r: Group) => <Link to={`/groups/${r.id}`}>{v}</Link>,
     },
 
     {
