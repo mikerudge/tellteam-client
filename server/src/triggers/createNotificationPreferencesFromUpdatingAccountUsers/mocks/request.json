@@ -1,0 +1,32 @@
+{
+  "data": {
+    "id": "ck56yfrae01cg07jma361drto",
+    "name": "Town Square",
+    "members": {
+      "items": [
+        {
+          "id": "ck56yefwp014l07l28x346fmi",
+          "email": "mikerudge15@gmail.com",
+          "mobileNumber": "07800527737",
+          "notificationPreferences": {
+            "count": 0,
+            "items": []
+          }
+        },
+        {
+          "id": "ck56z1enk00y408ied7zm8liy",
+          "email": "gareth@thetownsquare.co.uk",
+          "mobileNumber": "02920873421",
+          "notificationPreferences": {
+            "count": 0,
+            "items": []
+          }
+        }
+      ]
+    }
+  },
+  "headers": {
+    "x-header-1": "header value"
+  },
+  "body": "{\"foo\":\"bar\"}"
+}

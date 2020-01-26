@@ -1,89 +1,42 @@
-import React, { useState } from 'react';
-import { Icon, Button, message, Popconfirm, Input, Modal } from 'antd';
-
-type Variable = {
-  type: 'text' | 'number';
-  placeholder?: string;
-};
+import React from 'react';
+import { Action } from '../../../shared/CUSTOM_TYPES.';
 
 type Props = {
-  title: string;
-  description?: string;
-  disabled?: boolean;
-  variables?: Variable[];
+  action: Action;
+  selected?: boolean;
   clearInput: () => void;
-  message: string;
+  onClick: (args: Action) => void;
 };
 
-const CardItem: React.FC<Props> = ({ title, description, disabled, clearInput, variables, message: textMessage }) => {
-  const [loading, setLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const onClick = () => {
-    setLoading(true);
-    clearInput();
-    setIsSelected(false);
-    setTimeout(() => {
-      setLoading(false);
-      setIsSuccess(true);
-      setIsSelected(false);
-      message.success('Message sent');
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 2000);
-    }, 3000);
+const CardItem: React.FC<Props> = ({ onClick, action, selected }) => {
+  const selectCard = () => {
+    // setIsSelected(true);
+    onClick(action);
   };
 
   return (
     <div
-      onClick={() => setIsSelected(true)}
+      onClick={selectCard}
       style={{
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#f0f2f5',
+        backgroundColor: selected ? '#5299EA' : '#edf2f7',
         padding: '1.2rem',
         borderRadius: '10px',
         marginBottom: '0.9rem',
         cursor: 'pointer',
+        boxShadow: selected ? 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)' : '',
       }}
     >
       <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           {/* <Icon type="user" /> */}
-          <h3 style={{ margin: 0, fontWeight: 600, textTransform: 'uppercase' }}>{title}</h3>
-          <p style={{ margin: 0, fontWeight: 600, color: '#a0aec0' }}>{description}</p>
+          <h3 style={{ margin: 0, fontWeight: 600, textTransform: 'uppercase', color: selected ? 'white' : '' }}>
+            {action.title}
+          </h3>
+          <p style={{ margin: 0, fontWeight: 600, color: selected ? '#C4DCF8' : '#a0aec0' }}>{action.description}</p>
         </div>
-
-        {(isSelected || isSuccess || loading) && (
-          <Icon theme="outlined" style={{ marginLeft: '5px' }} type={loading ? 'loading' : 'check'} />
-        )}
       </div>
-      <div>
-        {isSelected &&
-          variables &&
-          variables.map(variable => {
-            return <Input style={{ marginTop: '15px', marginBottom: '5px' }} placeholder={variable.placeholder} />;
-          })}
-        {isSelected && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-            <Button onClick={() => setShowModal(true)} type="ghost">
-              Preview Message
-            </Button>
-            <Button
-              disabled={disabled || isSuccess || loading}
-              onClick={onClick}
-              style={{ marginLeft: '5px' }}
-              type="primary"
-            >
-              Send Message
-            </Button>
-          </div>
-        )}
-      </div>
-      <Modal centered title="Basic Modal" visible={showModal} onCancel={() => setShowModal(false)}>
-        <p>{textMessage}</p>
-      </Modal>
     </div>
   );
 };

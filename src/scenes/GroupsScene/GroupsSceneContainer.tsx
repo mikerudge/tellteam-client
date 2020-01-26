@@ -1,50 +1,44 @@
 import React from 'react';
-import GroupsScene from './GroupsScene';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import { LIST_GROUPS_QUERY } from '../../shared/graphql';
-import ListPage from '../../components/ListPage';
-import { Button } from 'antd';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { Result, Button } from 'antd';
 
-const EXCHANGE_RATES = gql`
-  {
-    rates(currency: "USD") {
-      rate
-      currency
-    }
-  }
-`;
+import ListPage from '../../components/ListPage';
+
+import { LIST_GROUPS_QUERY } from '../../shared/graphql';
+
+import { Group } from '../../shared/API_TYPES';
 
 const GroupsSceneContainer: React.FC = () => {
   const { loading, error, data } = useQuery(LIST_GROUPS_QUERY);
 
-  if (error) return <p>Error</p>;
+  if (error) {
+    return (
+      <Result
+        status="500"
+        title="Uh Oh!"
+        subTitle="Sorry, we had trouble getting your groups"
+        extra={<Button type="primary">Back Home</Button>}
+      />
+    );
+  }
 
   const items = data?.groupsList?.items ?? [];
 
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'memberName',
+      dataIndex: 'name',
       key: 'name',
-      render: (v: string) => {
-        return (
-          <a href="#" style={{ fontWeight: 600 }}>
-            {v}
-          </a>
-        );
-      },
+      render: (v: string, r: Group) => <Link to={`/groups/${r.id}`}>{v}</Link>,
     },
 
     {
-      title: 'Joined',
+      title: 'Created',
       dataIndex: 'createdAt',
       key: 'createdAt',
-    },
-    {
-      title: '',
-      dataIndex: '',
-      key: 'view',
+      render: (v: string) => moment(v).format('DD/MM/YYYY'),
     },
   ];
 

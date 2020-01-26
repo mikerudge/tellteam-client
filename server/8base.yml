@@ -1,0 +1,18 @@
+functions:
+  notify:
+    type: trigger.after
+    handler:
+      code: src/triggers/notify/handler.js
+    operation: Notifications.create
+  createNotificationPreferencesFromUpdatingAccountUsers:
+    type: trigger.before
+    handler:
+      code: >-
+        src/triggers/createNotificationPreferencesFromUpdatingAccountUsers/handler.ts
+    operation: Accounts.update
+  removeNotificationPreferencesFromUpdatingAccountUsers:
+    type: trigger.before
+    handler:
+      code: >-
+        src/triggers/removeNotificationPreferencesFromUpdatingAccountUsers/handler.ts
+    operation: Accounts.update

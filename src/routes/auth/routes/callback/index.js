@@ -1,8 +1,9 @@
 import React from 'react';
 import { withAuth } from '@8base/react-sdk';
 
-import { client } from '../../../../shared/api';
+import client from '../../../../shared/api';
 import * as gql from '../../../../shared/graphql';
+import { Result, Button, Spin } from 'antd';
 
 class CallbackContainer extends React.Component {
   async handleAuthentication({ idToken, email }) {
@@ -10,9 +11,8 @@ class CallbackContainer extends React.Component {
      * Auth headers for communicating with the 8base API.
      */
 
-    const t = await client.setIdToken(idToken);
+    await client.setIdToken(idToken);
 
-    console.log('idToken', idToken);
     /**
      * Check if user exists in 8base.
      */
@@ -24,11 +24,16 @@ class CallbackContainer extends React.Component {
        * thrown, which then the new user can be
        * created using the authResult values.
        */
-
-      await client.request(gql.USER_SIGN_UP_MUTATION, {
-        user: { email: email },
-        authProfileId: process.env.REACT_APP_AUTH_PROFILE_ID,
-      });
+      try {
+        await client.request(gql.USER_SIGN_UP_MUTATION, {
+          user: { email: email },
+          authProfileId: process.env.REACT_APP_AUTH_PROFILE_ID,
+        });
+      } catch (e) {
+        return (
+          <Result status="200" title="We're not taking on anymore users right now" subTitle="Thanks for signing up" />
+        );
+      }
     }
   }
 
@@ -39,8 +44,6 @@ class CallbackContainer extends React.Component {
     /* Identify or create user record using authenticated details */
     await this.handleAuthentication(authResult);
 
-    console.log('authResult.idToken', authResult.idToken);
-
     /* Add the idToken to the auth state */
     auth.authClient.setState({ token: authResult.idToken });
     /* Redirect user to root path */
@@ -48,7 +51,11 @@ class CallbackContainer extends React.Component {
   }
 
   render() {
-    return <h2>Loading...</h2>;
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Spin />
+      </div>
+    );
   }
 }
 /* withAuth injects 'auth' prop into component */
