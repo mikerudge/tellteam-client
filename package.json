@@ -50,6 +50,7 @@
     "test:trigger": "cd server && 8base invoke-local notify -p src/triggers/notify/mocks/request.json"
   },
   "license": "MIT",
+  "homepage": "https://tellteam.netlify.com/",
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "dotenv": "^8.2.0",
